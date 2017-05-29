@@ -1,0 +1,14 @@
+C:\Home\Training\FileBrowserWebApp\Prototype\FSTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\Home\Training\FileBrowserWebApp\Prototype\FSTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\Home\Training\FileBrowserWebApp\Prototype\FSTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\Home\Training\FileBrowserWebApp\Prototype\FSTests\bin\Debug\FSTests.dll
+C:\Home\Training\FileBrowserWebApp\Prototype\FSTests\bin\Debug\FSTests.pdb
+C:\Home\Training\FileBrowserWebApp\Prototype\FSTests\bin\Debug\FS.dll
+C:\Home\Training\FileBrowserWebApp\Prototype\FSTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
+C:\Home\Training\FileBrowserWebApp\Prototype\FSTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
+C:\Home\Training\FileBrowserWebApp\Prototype\FSTests\bin\Debug\FS.pdb
+C:\Home\Training\FileBrowserWebApp\Prototype\FSTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
+C:\Home\Training\FileBrowserWebApp\Prototype\FSTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
+C:\Home\Training\FileBrowserWebApp\Prototype\FSTests\obj\Debug\FSTests.csprojResolveAssemblyReference.cache
+C:\Home\Training\FileBrowserWebApp\Prototype\FSTests\obj\Debug\FSTests.dll
+C:\Home\Training\FileBrowserWebApp\Prototype\FSTests\obj\Debug\FSTests.pdb

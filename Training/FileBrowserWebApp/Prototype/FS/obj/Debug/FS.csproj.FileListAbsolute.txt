@@ -1,0 +1,5 @@
+C:\Home\Training\FileBrowserWebApp\Prototype\FS\bin\Debug\FS.dll
+C:\Home\Training\FileBrowserWebApp\Prototype\FS\bin\Debug\FS.pdb
+C:\Home\Training\FileBrowserWebApp\Prototype\FS\obj\Debug\FS.csprojResolveAssemblyReference.cache
+C:\Home\Training\FileBrowserWebApp\Prototype\FS\obj\Debug\FS.dll
+C:\Home\Training\FileBrowserWebApp\Prototype\FS\obj\Debug\FS.pdb

@@ -1,0 +1,6 @@
+C:\Home\Training\FileBrowserWebApp\Prototype\BLL\bin\Debug\BLL.dll.config
+C:\Home\Training\FileBrowserWebApp\Prototype\BLL\bin\Debug\BLL.dll
+C:\Home\Training\FileBrowserWebApp\Prototype\BLL\bin\Debug\BLL.pdb
+C:\Home\Training\FileBrowserWebApp\Prototype\BLL\obj\Debug\BLL.dll
+C:\Home\Training\FileBrowserWebApp\Prototype\BLL\obj\Debug\BLL.pdb
+C:\Home\Training\FileBrowserWebApp\Prototype\BLL\obj\Debug\BLL.csprojResolveAssemblyReference.cache

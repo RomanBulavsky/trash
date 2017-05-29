@@ -1,0 +1,8 @@
+C:\Home\Training\FileBrowserWebApp\Prototype\FSConsole\obj\Debug\FSConsole.csprojResolveAssemblyReference.cache
+C:\Home\Training\FileBrowserWebApp\Prototype\FSConsole\bin\Debug\FSConsole.exe.config
+C:\Home\Training\FileBrowserWebApp\Prototype\FSConsole\bin\Debug\FSConsole.exe
+C:\Home\Training\FileBrowserWebApp\Prototype\FSConsole\bin\Debug\FSConsole.pdb
+C:\Home\Training\FileBrowserWebApp\Prototype\FSConsole\bin\Debug\FS.dll
+C:\Home\Training\FileBrowserWebApp\Prototype\FSConsole\bin\Debug\FS.pdb
+C:\Home\Training\FileBrowserWebApp\Prototype\FSConsole\obj\Debug\FSConsole.exe
+C:\Home\Training\FileBrowserWebApp\Prototype\FSConsole\obj\Debug\FSConsole.pdb
