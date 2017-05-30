@@ -9,7 +9,7 @@ namespace FS
 {
     public class Browser : IBrowser
     {
-        private readonly DirectoryInfo directoryInfo;
+        private DirectoryInfo directoryInfo;
 
         public Browser(DirectoryInfo directoryInfo)
         {
@@ -30,11 +30,19 @@ namespace FS
         public IEnumerable<DirectoryInfo> GetDirectories(string path)
         {
             CheckPath(path);
+            if (Directory.Exists(directoryInfo.FullName + path))
+            {
+                Console.WriteLine("EXIST");
+            }
             var dir = directoryInfo.GetFileSystemInfos().ToList().First(x => x.ToString() == path);
+            
+            //directoryInfo.MoveTo(dir.Name);
+            var pp = Path.GetFullPath(directoryInfo.FullName);
+            var xx = Path.Combine(directoryInfo.FullName, path);
 
-            directoryInfo.MoveTo(dir.Name);
-            //directoryInfo.MoveTo(path); //TODO: twrows exceptions i can handle it here and give null for the customer
-            return new DirectoryInfo(path).GetDirectories();//.directoryInfo.GetDirectories());
+            directoryInfo = new DirectoryInfo(xx);
+            //Directory.Move(directoryInfo.FullName,xx); //TODO: twrows exceptions i can handle it here and give null for the customer
+            return new DirectoryInfo(Path.GetFullPath(dir.FullName)).GetDirectories();//.directoryInfo.GetDirectories());
         }
 
         public IEnumerable<FileInfo> GetFiles(string path)
@@ -61,24 +69,17 @@ namespace FS
 
             try
             {
-
-                // Delete the file if it exists.
-                if (File.Exists(path))
+                if (File.Exists(Path.GetFullPath(path)))
                 {
-                    // Note that no lock is put on the
-                    // file and the possibility exists
-                    // that another process could do
-                    // something with it between
-                    // the calls to Exists and Delete.
                     File.Delete(path);
                 }
 
                 // Create the file.
                 using (FileStream fs = File.Create(path))
                 {
-                    Byte[] info = new UTF8Encoding(true).GetBytes("This is some text in the file.");
-                    // Add some information to the file.
-                    fs.Write(info, 0, info.Length);
+                    //Byte[] info = new UTF8Encoding(true).GetBytes("This is some text in the file.");
+                    //// Add some information to the file.
+                    //fs.Write(info, 0, info.Length);
                 }
 
 //                // Open the stream and read it back.
