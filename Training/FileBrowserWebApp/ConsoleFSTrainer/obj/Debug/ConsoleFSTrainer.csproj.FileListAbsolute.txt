@@ -1,6 +1,0 @@
-C:\Home\Training\FileBrowserWebApp\ConsoleFSTrainer\bin\Debug\ConsoleFSTrainer.exe.config
-C:\Home\Training\FileBrowserWebApp\ConsoleFSTrainer\bin\Debug\ConsoleFSTrainer.exe
-C:\Home\Training\FileBrowserWebApp\ConsoleFSTrainer\bin\Debug\ConsoleFSTrainer.pdb
-C:\Home\Training\FileBrowserWebApp\ConsoleFSTrainer\obj\Debug\ConsoleFSTrainer.csprojResolveAssemblyReference.cache
-C:\Home\Training\FileBrowserWebApp\ConsoleFSTrainer\obj\Debug\ConsoleFSTrainer.exe
-C:\Home\Training\FileBrowserWebApp\ConsoleFSTrainer\obj\Debug\ConsoleFSTrainer.pdb
