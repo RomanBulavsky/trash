@@ -12,6 +12,41 @@ namespace BllTests
     {
 
         private FileSystemProvider fileSystemProvider;
+        //TODO: DELETE
+        [TestMethod]
+        public void BC()
+        {
+            var path = @"C:\Home\Temp";
+
+            var a = path.Split('\\');
+            var paths = new List<string>();
+            var paths2 = new List<string>();
+            paths.AddRange(Path.GetFullPath(path).Split(Path.DirectorySeparatorChar));
+
+            var x = paths.ToList().Select(z => z).ToList();
+            foreach (var p in paths)
+            {
+                paths2.Add(string.Join(Path.DirectorySeparatorChar.ToString(),x.ToArray()));
+                var s = paths[x.Count - 1];
+                x.Remove(s);
+            }
+
+
+            for (var i = 0; i < a.Length; i++)
+            {
+                //if (i == 0) paths.Add(a[i] + "\\");
+                for (var j = 0; j < i+1; j++)
+                    if (j == 0) paths.Add(a[j] + "\\");
+                    else
+                        paths[i] += a[j]+ "\\";
+            }
+
+            foreach (var path1 in paths)
+                Console.WriteLine(path1);
+        }
+
+
+
 
         #region Init
 
@@ -98,13 +133,9 @@ namespace BllTests
             var expectedNames = new List<string>();
 
             foreach (var actualDrive in actualDrives)
-            {
                 actualNames.Add(actualDrive.Name);
-            }
             foreach (var actualDrive in DriveInfo.GetDrives())
-            {
                 expectedNames.Add(actualDrive.Name);
-            }
 
             CollectionAssert.AreEquivalent(expectedNames,actualNames);
 
@@ -118,13 +149,9 @@ namespace BllTests
             var expectedNames = new List<string>();
 
             foreach (var dir in actualDirs)
-            {
                 actualNames.Add(dir.Name);
-            }
             foreach (var dir in new DirectoryInfo(path).GetDirectories())
-            {
                 expectedNames.Add(dir.Name);
-            }
 
             CollectionAssert.AreEquivalent(expectedNames, actualNames);
 
@@ -139,13 +166,9 @@ namespace BllTests
             var expectedNames = new List<string>();
 
             foreach (var dir in actualFiles)
-            {
                 actualNames.Add(dir.Name);
-            }
             foreach (var dir in new DirectoryInfo(path).GetFiles())
-            {
                 expectedNames.Add(dir.Name);
-            }
 
             CollectionAssert.AreEquivalent(expectedNames, actualNames);
 
