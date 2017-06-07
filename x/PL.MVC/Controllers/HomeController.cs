@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
-using System.Web.Hosting;
 using System.Web.Mvc;
 using Bll;
 using Bll.Interfaces;
@@ -13,7 +11,9 @@ namespace PL.MVC.Controllers
     public class HomeController : Controller
     {
         public IFileSystemFrame FileSystemFrame { get; }
+
         //TODO: ERROR DI!!!
+
         public FileSystemProvider FileSystemProvider { get; } = new FileSystemProvider();
 
         public HomeController(IFileSystemFrame fileSystemFrame)
@@ -22,6 +22,7 @@ namespace PL.MVC.Controllers
             FileSystemFrame = fileSystemFrame;
             Console.WriteLine("CTOR");
         }
+
         public JsonResult GetDirectory(string path)
         {
             //var z = path;
@@ -35,6 +36,7 @@ namespace PL.MVC.Controllers
 
             return Json(temp, JsonRequestBehavior.AllowGet);
         }
+
         public JsonResult GetFiles(string path)
         {
 
@@ -45,6 +47,7 @@ namespace PL.MVC.Controllers
 
             return Json(temp, JsonRequestBehavior.AllowGet);
         }
+
         public JsonResult GetFile(string path)
         {
 
@@ -60,6 +63,7 @@ namespace PL.MVC.Controllers
         {
             public string X {get;set;}
         }
+
         public JsonResult DeleteFile(string path)
         {
 
@@ -70,6 +74,7 @@ namespace PL.MVC.Controllers
 
             return Json( true, JsonRequestBehavior.AllowGet);
         }
+
         [HttpPut]
         public JsonResult ChangeFileName(string path, string oldName, string newName)
         {
@@ -80,6 +85,7 @@ namespace PL.MVC.Controllers
 
             return Json(true, JsonRequestBehavior.AllowGet);
         }
+
         public JsonResult AddFile(string path, string name)
         {
 
@@ -94,7 +100,7 @@ namespace PL.MVC.Controllers
         public JsonResult GetBreadCrumbs(string path)
         {
             var pathx = Path.GetFullPath(path);
-            var pathParts = pathx.Split(Path.DirectorySeparatorChar);
+            var pathParts = pathx.Split(new[] { Path.DirectorySeparatorChar },StringSplitOptions.RemoveEmptyEntries);
             var paths = new List<string>(12);
             for (var i = 0; i < pathParts.Length; i++)
             {
@@ -106,12 +112,14 @@ namespace PL.MVC.Controllers
             }
             return Json(paths, JsonRequestBehavior.AllowGet);
         }
+
         public JsonResult GetParrent(string path)
         {
             var x = Directory.GetParent(Path.GetFullPath(path));
            
             return Json(x.FullName, JsonRequestBehavior.AllowGet);
         }
+
         public JsonResult GetFolder(string path)
         {
 
@@ -133,6 +141,7 @@ namespace PL.MVC.Controllers
             //FileSystemProvider.UpdateFileName("C:/home",);
             return Json(name, JsonRequestBehavior.AllowGet);
         }
+
         public JsonResult Disk()
         {
             string[] smass = new[] {"C:/", "D:/"};
@@ -168,6 +177,11 @@ namespace PL.MVC.Controllers
 
             return Json(r, JsonRequestBehavior.AllowGet);
             //return View();
+        }
+
+        public ViewResult Index2()
+        {
+            return View();
         }
 
         class RepresentingClass

@@ -1,4 +1,4 @@
-//define(['jquery','underscore','backbone'], function () {
+﻿//define(['jquery','underscore','backbone'], function () {
 
 //$("body").css("background-color","black");
 app = {
@@ -7,9 +7,6 @@ app = {
     Views: {}
 } || app;
 
-
-Backbone.emulateHTTP = true;
-app.path = "";
 
 
 app.Model.Drive = Backbone.Model.extend({
@@ -46,7 +43,7 @@ app.Views.DriveCollection = Backbone.View.extend({
                 return it;
             }
         }).then(function () {
-
+            $("#forSelect").html('');
             $("#forSelect").append(app.cv.el);
         });
         return this;
@@ -306,7 +303,8 @@ app.Views.FileCollection = Backbone.View.extend({
 
 app.Model.Folder = Backbone.Model.extend({
     defaults: {
-        folder: "default"
+        folder: "default",
+        //path: returned by cntroller
     },
     //urlRoot: 'home/disk'
 });
@@ -320,10 +318,21 @@ app.Views.Folder = Backbone.View.extend({
     events: {
         'click .path' : 'changeFolder'
     },
-    changeFolder: function () {
+    changeFolder: function (e) {
+        e.preventDefault();
         $("#backButton").show();
+        
+        console.log(this.model.path);
+        var fragment = Backbone.history.fragment;
+        var p = this.model.get("path");
+        var end = p.split("\\");
+        var last = end[end.length - 1];
+        var path = fragment + "/" + last;
+        //alert(path);
+        app.pathx = path; 
         app.previousPath = app.path;
         app.path = this.model.get('path');
+        
         app.f = new app.Collection.File();
         app.f.url += app.path.trim();
         app.fv = new app.Views.FileCollection({ collection: app.f });
@@ -331,6 +340,11 @@ app.Views.Folder = Backbone.View.extend({
         app.ff = new app.Collection.Folder();
         app.ff.url += app.path.trim();
         app.ffv = new app.Views.FolderCollection({ collection: app.ff });
+
+        //Backbone.history.navigate(path.toString(), { trigger: false, replace: true });
+        app.x.navigate(path.toString(), { trigger: false });
+        //alert("PATH CHANGED");
+
     },
     render: function () {
         this.$el.html(this.template(this.model.toJSON()));
@@ -363,67 +377,77 @@ app.Views.FolderCollection = Backbone.View.extend({
 
 });
 
-
-app.c = new app.Collection.Drive();
-app.cv = new app.Views.DriveCollection({ collection: app.c });
-$(document).ready(function () {
-
-    $("#pathInputButton").click(function (e) {
-        e.preventDefault();
-        app.path = $("#pathInput").val();
-        app.path = decodeURI(app.path);
-
-        app.f = new app.Collection.File();
-        app.f.url += app.path.trim();
-        app.fv = new app.Views.FileCollection({ collection: app.f });
-
-        app.ff = new app.Collection.Folder();
-        app.ff.url += app.path.trim();
-        app.ffv = new app.Views.FolderCollection({ collection: app.ff });
-    });
-    $("#backButton").click(function (e) {
-        e.preventDefault();
-        //app.path = app.previousPath;
-        $.get("/home/GetParrent?path=" + app.path, function (e) {
-            alert(e);
-            app.path = e;
-            app.f = new app.Collection.File();
-            app.f.url += app.path.trim();
-            app.fv = new app.Views.FileCollection({ collection: app.f });
-
-            app.ff = new app.Collection.Folder();
-            app.ff.url += app.path.trim();
-            app.ffv = new app.Views.FolderCollection({ collection: app.ff });
+app.Router = Backbone.Router.extend({
+    initialize: function() {
+        alert("INIT");
+        this.on("route", function (e) {
+            console.log(e);
+            alert("route event + " + e);
         });
+        this.on("route: main", function (e) {
+            console.log(e);
+            alert("route event2 + " + e);
+        });
+        this.on("all", function (e) {
+            console.log(e);
+            alert("all + " + e);
+        });
+
+    },
+    routes: {
+        //"": "main", // #help
+        "main/:disk/*path": "main", // #help
+        "auth": "auth",
+        "search/:name": "search"
+    },
+    main: function (disk, path) {
+        alert("PATH" + path);
         
-    });
-    $("#BC").click(function(e) {
-        e.preventDefault();
-        $.get("/home/GetBreadCrumbs?path=" + app.path,
-            function(e) {
-                alert(e);
-                $("#BCUL").empty();
-                for (var index in e) {
-                    console.log(e[index]);
-                    var str = '<li><a href="#" id="'+index+'">' + e[index] + '</a></li>';
-                    console.log(str);
-                    $("#BCUL").append(str);
-                }
-                for (var i in e) {
-                    var indexer = (function (i) {
-                        var z = i;
-                        return function() {
-                            return z;
-                        };
-                    })(i);
-//                    if(i == 0)
-//                        app.indexer = indexer;
-//
-//                    if (i == 1 )
-//                        app.indexer2 = indexer;
-                    
-                    $("#" + i).click(function (z) {
-                        app.path = $(this).html();
+        $(document).ready(function() {
+            alert("main again");
+            Backbone.emulateHTTP = true;
+            //app.path = "";
+            if (app.path == undefined && disk != undefined) {
+            
+                app.path = disk + ":/";
+                if (path != undefined)
+                    app.path += path;
+            }
+             //alert('MAIN');
+            //$(document.body).html('');
+            //alert(disk +":/"+path);
+
+            //if(disk != undefined)
+            //app.path = disk + ":/" + path;
+            //TODO: hmmmm
+//            if (app.pathx) {
+//            Backbone.history.navigate(app.pathx, {trigger:false});
+//            }
+            app.c = new app.Collection.Drive();
+            app.cv = new app.Views.DriveCollection({ collection: app.c });
+
+                $("#pathInput").val(app.path);
+                //$("#pathInput").val("c:/home");//trunk for time
+
+                $("#pathInputButton").click(function (e) {
+                    e.preventDefault();
+                    app.path = $("#pathInput").val();
+                    app.path = decodeURI(app.path);
+
+                    app.f = new app.Collection.File();
+                    app.f.url += app.path.trim();
+                    app.fv = new app.Views.FileCollection({ collection: app.f });
+
+                    app.ff = new app.Collection.Folder();
+                    app.ff.url += app.path.trim();
+                    app.ffv = new app.Views.FolderCollection({ collection: app.ff });
+                });
+                $("#backButton").click(function (e) {
+                    e.preventDefault();
+                    //app.path = app.previousPath;
+                    $.get("/home/GetParrent?path=" + app.path, function (e) {
+                        alert(e);
+                        app.path = e;
                         app.f = new app.Collection.File();
                         app.f.url += app.path.trim();
                         app.fv = new app.Views.FileCollection({ collection: app.f });
@@ -431,12 +455,84 @@ $(document).ready(function () {
                         app.ff = new app.Collection.Folder();
                         app.ff.url += app.path.trim();
                         app.ffv = new app.Views.FolderCollection({ collection: app.ff });
-
                     });
-                }
-                
-            });
-    });
-    
+
+                });
+                $("#BC").click(function (e) {
+                    e.preventDefault();
+                    $.get("/home/GetBreadCrumbs?path=" + app.path,
+                        function (e) {
+                            alert(e);
+                            $("#BCUL").empty();
+                            for (var index in e) {
+                                console.log(e[index]);
+                                var str = '<li><a href="#" id="' + index + '">' + e[index] + '</a></li>';
+                                console.log(str);
+                                $("#BCUL").append(str);
+                            }
+                            $("#BCUL>li>a").click(function (z) {
+                                alert($(this).html());
+                                app.path = $(this).html();
+                                app.f = new app.Collection.File();
+                                app.f.url += app.path.trim();
+                                app.fv = new app.Views.FileCollection({ collection: app.f });
+
+                                app.ff = new app.Collection.Folder();
+                                app.ff.url += app.path.trim();
+                                app.ffv = new app.Views.FolderCollection({ collection: app.ff });
+
+                            });
+                            //                for (var i in e) {
+                            //                    var indexer = (function (i) {
+                            //                        var z = i;
+                            //                        return function() {
+                            //                            return z;
+                            //                        };
+                            //                    })(i);
+                            ////                    if(i == 0)
+                            ////                        app.indexer = indexer;
+                            ////
+                            ////                    if (i == 1 )
+                            ////                        app.indexer2 = indexer;
+                            //                    
+                            //                    $("#" + i).click(function (z) {
+                            //                        alert($(this).html());
+                            //                        app.path = $(this).html();
+                            //                        app.f = new app.Collection.File();
+                            //                        app.f.url += app.path.trim();
+                            //                        app.fv = new app.Views.FileCollection({ collection: app.f });
+                            //
+                            //                        app.ff = new app.Collection.Folder();
+                            //                        app.ff.url += app.path.trim();
+                            //                        app.ffv = new app.Views.FolderCollection({ collection: app.ff });
+                            //
+                            //                    });
+                            //                }
+
+                        });
+                });
+
+
+        });
+  },
+
+    auth: function () {
+
+
+        $(document.body).html('<h2>"Authentication " </h2>');
+    },
+    search: function (name) {
+
+        $(document.body).html('<h2>"searching " ' + name + '</h2>');
+    }
 
 });
+
+$(document).ready(function () {
+    $("#pathInput").val("c:/home");
+    alert("X");
+    app.x = new app.Router();
+
+    Backbone.history.start();//{ pushState: true }
+});
+
