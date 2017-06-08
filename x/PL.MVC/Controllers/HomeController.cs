@@ -164,7 +164,7 @@ namespace PL.MVC.Controllers
             public string drive { get; set; }
         }
 
-        public JsonResult Index()
+        public JsonResult Index2()
         {
             ViewBag.Drives = FileSystemFrame.Drives.Select(x=>x.Name).ToList();
             FileSystemFrame.FillInFileSystemFrame("c:/Home");
@@ -179,9 +179,17 @@ namespace PL.MVC.Controllers
             //return View();
         }
 
-        public ViewResult Index2()
+        public ViewResult Index()
         {
             return View();
+        }
+
+        [Authorize]
+        public JsonResult AuthTest()
+        {
+            string s = "Authorized!";
+            return Json(s,JsonRequestBehavior.AllowGet);
+          
         }
 
         class RepresentingClass

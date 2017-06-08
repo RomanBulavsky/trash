@@ -520,6 +520,8 @@ app.Router = Backbone.Router.extend({
 
 
         $(document.body).html('<h2>"Authentication " </h2>');
+
+        
     },
     search: function (name) {
 
@@ -532,7 +534,20 @@ $(document).ready(function () {
     $("#pathInput").val("c:/home");
     alert("X");
     app.x = new app.Router();
+    a = $("#aGET").click(function() {
+            alert("check");
+            $.get({
+            url:"/home/AuthTest",
+            success: function(e) {
+                alert("SUCCESS");
+            }
+            
+        }
+    ).then(function(e) {
+                alert(e);
+            });
 
+});
     Backbone.history.start();//{ pushState: true }
 });
 

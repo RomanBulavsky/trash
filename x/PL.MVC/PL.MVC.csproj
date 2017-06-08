@@ -14,7 +14,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PL.MVC</RootNamespace>
-    <AssemblyName>PL.MVC</AssemblyName>
+    <AssemblyName>s</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
@@ -228,6 +228,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="index.1.html" />
     <Content Include="index.html" />
     <Content Include="index2.html" />
     <Content Include="indexold.html" />
@@ -251,12 +252,15 @@
     <Content Include="Scripts\lib\jquery.js" />
     <Content Include="Scripts\lib\require.js" />
     <Content Include="Scripts\lib\underscore.js" />
+    <Content Include="Scripts\main - Copy.js" />
     <Content Include="Scripts\main.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\routers\router.js" />
     <Content Include="Scripts\styles\styles.css" />
-    <Content Include="Scripts\templates\templates.html" />
+    <Content Include="Scripts\templates\app.html" />
+    <Content Include="Scripts\views\app.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -270,7 +274,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index2.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
@@ -292,9 +296,12 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Scripts\jsconfig.json" />
+    <Content Include="Views\Account\Login2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Scripts\collections\" />
+    <Folder Include="Scripts\models\" />
     <Folder Include="Views\Backbone\" />
   </ItemGroup>
   <ItemGroup>
