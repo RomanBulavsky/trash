@@ -1,0 +1,16 @@
+header {
+    display: block;
+    height: auto;
+    background: #F0F0F0;
+    border: 1px solid #CCC;
+    width: 100%;
+    margin: auto;
+}
+#super {
+}
+#account {
+    float: right;
+    width: 20%;
+    /*    float: right;*/
+}
+

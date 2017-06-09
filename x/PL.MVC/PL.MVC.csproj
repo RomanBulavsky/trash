@@ -228,10 +228,12 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="main.html" />
     <Content Include="index.1.html" />
     <Content Include="index.html" />
     <Content Include="index2.html" />
     <Content Include="indexold.html" />
+    <Content Include="Scripts\app\app - Copy.js" />
     <Content Include="Scripts\app\app.js" />
     <Content Include="Scripts\app\apps.js" />
     <Content Include="Scripts\app\bb.js" />
@@ -258,6 +260,7 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\routers\router.js" />
+    <Content Include="Scripts\styles\style.css" />
     <Content Include="Scripts\styles\styles.css" />
     <Content Include="Scripts\templates\app.html" />
     <Content Include="Scripts\views\app.js" />
@@ -297,6 +300,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Scripts\jsconfig.json" />
     <Content Include="Views\Account\Login2.cshtml" />
+    <Content Include="Views\Account\Login3.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

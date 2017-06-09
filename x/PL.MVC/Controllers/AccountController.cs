@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.WebPages;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -27,6 +28,30 @@ namespace PL.MVC.Controllers
             UserManager = userManager;
             SignInManager = signInManager;
         }
+
+        #region MyRegion
+
+        [AllowAnonymous]
+        public JsonResult IsAuthorized()
+        {
+            var userName = !User.Identity.GetUserName().IsEmpty();
+            return Json(userName, JsonRequestBehavior.AllowGet);
+        }
+
+        [AllowAnonymous]
+        public JsonResult UserInformation()
+        {
+            return Json(new {email = User.Identity.GetUserName(), roles =  new string[]{"Admin", "User"} }, JsonRequestBehavior.AllowGet);
+        }
+
+        [AllowAnonymous]
+        public JsonResult LogOut()
+        {
+            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            return Json("true",JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
 
         public ApplicationSignInManager SignInManager
         {
@@ -52,11 +77,6 @@ namespace PL.MVC.Controllers
             }
         }
 
-        [AllowAnonymous]
-        public JsonResult IsAuthorized()
-        {
-            return Json(User.Identity.GetUserName(), JsonRequestBehavior.AllowGet);
-        }
         //
         // GET: /Account/Login
         [AllowAnonymous]
@@ -106,12 +126,11 @@ namespace PL.MVC.Controllers
         // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
-        public async Task<JsonResult> Login2(LoginViewModel model, string returnUrl)
+        public async Task<ActionResult> Login2(LoginViewModel model, string returnUrl)
         {
             if (!ModelState.IsValid)
             {
-                return Json("NON VALID");
-                //return View(model);
+                return View(model);
             }
 
             // This doesn't count login failures towards account lockout
@@ -120,19 +139,46 @@ namespace PL.MVC.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return Json("Success from server");
-                    //return RedirectToLocal(returnUrl);
+                    return null;//RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
-                    return Json("Lockout from server");
-                    //return View("Lockout");
+                    return View("Lockout");
                 case SignInStatus.RequiresVerification:
-                    return Json("RequiresVerification from server");
-                    //return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                    return RedirectToAction("SendCode", new { ReturnUrl = "lol", RememberMe = model.RememberMe });
                 case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "Invalid login attempt.");
-                    return Json("DEFAULT from server");
-                //return View(model);
+                    return View(model);
+            }
+        }
+        
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<JsonResult> Login3(LoginViewModel2 model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json("Invalid");
+            }
+
+            // This doesn't count login failures towards account lockout
+            // To enable password failures to trigger account lockout, change to shouldLockout: true
+            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, false, shouldLockout: false);
+            switch (result)
+            {
+                case SignInStatus.Success:
+                    return Json("Success");
+                //return RedirectToLocal(returnUrl);
+                case SignInStatus.LockedOut:
+                    return Json("LockOut");
+                //return View("Lockout");
+                case SignInStatus.RequiresVerification:
+                    return Json("reqVer");
+                //return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                case SignInStatus.Failure:
+                default:
+                    ModelState.AddModelError("", "Invalid login attempt.");
+                    return Json("def");
+                    //return View(model);
             }
         }
 

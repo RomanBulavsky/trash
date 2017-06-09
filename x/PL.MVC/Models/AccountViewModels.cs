@@ -54,12 +54,27 @@ namespace PL.MVC.Models
         public string Email { get; set; }
 
         [Required]
-        [DataType(DataType.Password)]
+        //[DataType(DataType.Password)]//TODO : validation
         [Display(Name = "Password")]
         public string Password { get; set; }
 
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
+    }
+    public class LoginViewModel2
+    {
+        [Required]
+        [Display(Name = "Email")]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]//TODO : validation
+        [Display(Name = "Password")]
+        public string Password { get; set; }
+
+        [Display(Name = "Remember me?")]
+        public string RememberMe { get; set; }
     }
 
     public class RegisterViewModel
