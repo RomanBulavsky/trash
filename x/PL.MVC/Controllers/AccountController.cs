@@ -52,6 +52,11 @@ namespace PL.MVC.Controllers
             }
         }
 
+        [AllowAnonymous]
+        public JsonResult IsAuthorized()
+        {
+            return Json(User.Identity.GetUserName(), JsonRequestBehavior.AllowGet);
+        }
         //
         // GET: /Account/Login
         [AllowAnonymous]

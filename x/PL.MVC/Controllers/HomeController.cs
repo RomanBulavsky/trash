@@ -179,9 +179,10 @@ namespace PL.MVC.Controllers
             //return View();
         }
 
-        public ViewResult Index()
+        public FilePathResult Index()
         {
-            return View();
+            //return View();
+            return new FilePathResult("../index.html", "text/html");
         }
 
         [Authorize]

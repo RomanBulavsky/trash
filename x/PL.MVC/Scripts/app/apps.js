@@ -532,22 +532,33 @@ app.Router = Backbone.Router.extend({
 
 $(document).ready(function () {
     $("#pathInput").val("c:/home");
-    alert("X");
     app.x = new app.Router();
     a = $("#aGET").click(function() {
-            alert("check");
-            $.get({
-            url:"/home/AuthTest",
+        alert("check");
+        $.get({
+            url: "/home/AuthTest",
             success: function(e) {
                 alert("SUCCESS");
             }
-            
-        }
-    ).then(function(e) {
-                alert(e);
-            });
 
-});
-    Backbone.history.start();//{ pushState: true }
+        }).then(function(e) {
+            alert(e);
+        });
+    });
+    z = $("#isA").click(function() {
+        alert("check");
+        $.get({
+            url: "/account/IsAuthorized",
+            success: function(e) {
+                alert("NAME SUCCESS " + e);
+            }
+
+        }).then(function(e) {
+            alert(e);
+        });
+    });
+
+
+    Backbone.history.start({ pushState: true, root: '/' });//{ pushState: true }
 });
 
