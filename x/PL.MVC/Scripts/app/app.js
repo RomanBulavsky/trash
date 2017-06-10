@@ -14,12 +14,6 @@ app.Models.User = Backbone.Model.extend({
         roles: ["admin"],
         authorized: false
     },
-    initialize:function() {
-        this.on('change', this.change, this);
-    },
-    change:function() {
-        alert('change');
-    },
     urlRoot: 'account/userinformation'
 });
 app.Views.User = Backbone.View.extend({
@@ -28,19 +22,19 @@ app.Views.User = Backbone.View.extend({
     initialize: function () {
         //var it = this;
         this.model.fetch({success: function () {/*it.render();*/},error: function() {alert("Error");}});
-        this.model.on('change', this.render, this);// TODO: -> |
-        //this.model.on('change', somefunc, this);
+        //this.model.on('change', this.render, this);// TODO: -> |
+        //this.model.on('sync', this.renderBySync, this);
+        this.model.on('change', this.render, this);
     },
     render: function () {
-        alert("Render User");
+        //alert("Render User");
         this.$el.html(this.template(this.model.toJSON()));
         return this;
     },
-    events: {
-        'change': "tag" // on view elements like <tags>
-    },
-    showAlert: function() {
-      alert("re");  
+    renderBySync: function () {
+        alert("Render  by sync User");
+        this.$el.html(this.template(this.model.toJSON()));
+        return this;
     }
 });
 app.Router = Backbone.Router.extend({
@@ -54,53 +48,53 @@ app.Router = Backbone.Router.extend({
         //'*': "preMain"
     },
     initialize: function () {
-        alert("Init + auth");
+        this.authorizationCheck();
+        this.on('superView', this.superView, this); // SuperView rendering EVENT
+    },
+    authorizationCheck:function() {
         $.get({
             url: "/account/IsAuthorized",
             it: this,
-            success: function (userName) {
-                app.name = userName;
-
-                if (userName === false){
-                    app.user.set("authorized",false);
+            success: function (isAuthorized) {
+                if (isAuthorized === false) {
+                    app.user.set("authorized", false);
                 }
-                else{
-                    app.user.set("authorized",true);
+                else {
+                    app.user.set("authorized", true);
                     app.triggered = false;// we can create full super view
 
                     if (Backbone.history.fragment === "login") // TODO: ridirect crutch
                         Backbone.history.navigate("#preMain", true);
-
-                    $("#logout").show();
-
-                    $("#logout").click(function (e) {
-                        e.preventDefault();
-                        $.get({
-                            url: "/account/LogOut",
-                            success: function (e) {
-                                app.user.set("authorized", false);
-                                $("#logout").hide();
-                                app.triggered = false;// Bad practise
-                                Backbone.history.navigate("#login",true);
-                            }
-                        });
-                    });
+                    //bad practice
                 }
             }
         });
-
-        this.on('superView', this.superView, this); // SuperView rendering EVENT
+    },
+    appendLogoutLogic: function (){  
+        $("#logout").show();
+        $("#logout").click(function (e) {
+                e.preventDefault();
+                $.get({
+                    url: "/account/LogOut",
+                    success: function (e) {
+                        app.user.set("authorized", false);
+                        $("#logout").hide();
+                        app.triggered = false;// Bad practise
+                        Backbone.history.navigate("#login", true);
+                    }
+                });
+            });
     },
     superView: function () {
         if (!app.triggered) {
-            alert("Trigger SuperView");
+            //alert("Trigger SuperView");
             $("#appEnterPoint").html("").append($("#appSuperTemplate").html()); //TODO: event
-
             if (app.user.get("authorized") === true) {//TODO:here
-                
-                app.userView = new app.Views.User({ model: app.user });
-
-                $("#account").append(app.userView.render().el);
+                this.appendLogoutLogic();
+                $("#account").append(app.userView.el);//.render() no need to use it here
+                if (app.user.get("roles").includes("Admin")) {
+                    alert("Admin");
+                }
             }
             else {
                 $("#account").append($("#appUnauthorizedTemplate").html());
@@ -108,6 +102,7 @@ app.Router = Backbone.Router.extend({
             app.triggered = true; // mark
         }
         else {
+            alert("not super");
             $("#subView").html("");
         }
     },
@@ -115,7 +110,6 @@ app.Router = Backbone.Router.extend({
         if (app.user.get("authorized") === false) {
             Backbone.history.navigate("#login", true);
         } else {
-
             this.trigger("superView");
             $("#subView").append($("#appPreMainTemplate").html());
         }
@@ -133,16 +127,6 @@ app.Router = Backbone.Router.extend({
     },
     login: function () {
         this.trigger("superView");
-        this.x = 12;
-        function makeCounter() {
-            var it = this;
-
-            return function () { // (**)
-                return it;
-            };
-        }
-
-        var z = makeCounter();
 
         if (!Backbone.history.fragment) {
             Backbone.history.navigate("#login", false);
@@ -153,40 +137,23 @@ app.Router = Backbone.Router.extend({
         }
         else {
             $("#subView").append($("#appLoginTemplate").html());
-            
+            var it = this;
             $("#submitButton").click(function (e) {
                 e.preventDefault();
-                console.log(z);
-                var xx = z();
-                alert("inCLick", xx.x);
-                alert("Form");
-                function xxx() {
-                    alert("xxx" + z().x);
-                }
-                xxx();
-                //TODO: change
-                var data = { model: { Email: $("#Email").val(), Password: $("#Password:password").val(), RememberMe: $("#RememberMe")}, returnUrl : "ret"};
-
                 $.post({
-                    url: "/Account/Login3",
-                    data: JSON.stringify(data),
-                    success: function () {
-                        xxx();
-                        var x = xx;
-                        alert(x.x);
-                    },
-                    contentType: "application/json"
+                    url: "/account/Login3",
+                    success: function (e) {
+                        app.triggered = false;// Bad practise
+                        it.authorizationCheck();// jump by itself Backbone.history.navigate("#preMain", true);
+                    }
+                }, $('#loginForm').serialize());
 
-                }).then(function() {
-                    alert(xx.x);
-                },function() {
-                    alert("Error");
-                });
-            },this);
+            });
         }
     }
 });
 
 app.user = new app.Models.User();
+app.userView = new app.Views.User({ model: app.user });
 new app.Router();
 Backbone.history.start();

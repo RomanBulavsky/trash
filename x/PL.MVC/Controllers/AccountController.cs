@@ -5,8 +5,10 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using System.Web.WebPages;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using PL.MVC.Models;
@@ -18,6 +20,8 @@ namespace PL.MVC.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext _context;
+        private RoleManager<IdentityRole> _role = new RoleManager<IdentityRole>(_context);
 
         public AccountController()
         {
@@ -31,10 +35,18 @@ namespace PL.MVC.Controllers
 
         #region MyRegion
 
+        [Authorize(Roles = "Admin")]
+        public JsonResult getRoles()
+        {
+            //var name = User.Identity.GetUserName();
+            //var roles = Roles.GetRolesForUser(name);
+            return Json("asd", JsonRequestBehavior.AllowGet);//TODO:rolesz
+        }
         [AllowAnonymous]
         public JsonResult IsAuthorized()
         {
             var userName = !User.Identity.GetUserName().IsEmpty();
+            //var roles = _context.Roles.Where(x=>x.Id)
             return Json(userName, JsonRequestBehavior.AllowGet);
         }
 
@@ -153,7 +165,7 @@ namespace PL.MVC.Controllers
         
         [HttpPost]
         [AllowAnonymous]
-        public async Task<JsonResult> Login3(LoginViewModel2 model)
+        public async Task<JsonResult> Login3(LoginViewModel model)
         {
             if (!ModelState.IsValid)
             {
