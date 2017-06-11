@@ -215,6 +215,27 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706081951371_InitialCreate.cs" />
+    <Compile Include="Migrations\201706081951371_InitialCreate.Designer.cs">
+      <DependentUpon>201706081951371_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706101721040_DataMigration.cs" />
+    <Compile Include="Migrations\201706101721040_DataMigration.Designer.cs">
+      <DependentUpon>201706101721040_DataMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706101806453_DataMigration2.cs" />
+    <Compile Include="Migrations\201706101806453_DataMigration2.Designer.cs">
+      <DependentUpon>201706101806453_DataMigration2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706101828067_DataMigration3.cs" />
+    <Compile Include="Migrations\201706101828067_DataMigration3.Designer.cs">
+      <DependentUpon>201706101828067_DataMigration3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706110744155_by.cs" />
+    <Compile Include="Migrations\201706110744155_by.Designer.cs">
+      <DependentUpon>201706110744155_by.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -332,6 +353,23 @@
       <Project>{4d6216f3-7bdd-4104-a0a7-599a849230e4}</Project>
       <Name>Bll</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201706081951371_InitialCreate.resx">
+      <DependentUpon>201706081951371_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706101721040_DataMigration.resx">
+      <DependentUpon>201706101721040_DataMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706101806453_DataMigration2.resx">
+      <DependentUpon>201706101806453_DataMigration2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706101828067_DataMigration3.resx">
+      <DependentUpon>201706101828067_DataMigration3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706110744155_by.resx">
+      <DependentUpon>201706110744155_by.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
