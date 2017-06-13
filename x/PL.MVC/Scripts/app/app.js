@@ -29,9 +29,9 @@ app.Views.Account = Backbone.View.extend({
     },
     render: function () {
         this.$el.html(this.template(this.model.toJSON()));
-        alert(this.model.get("Roles").includes("Admin"));
+        //alert(this.model.get("Roles").includes("Admin"));
         if (this.model.get("Roles").includes("User")) {
-            alert("#" + this.model.get("Id") + "0");
+            //alert("#" + this.model.get("Id") + "0");
             $("#" + this.model.get("Id") + "0").prop("checked", true);
         }
         else
@@ -102,28 +102,28 @@ app.Views.DriveCollection = Backbone.View.extend({
         });
         return this;
     },
-    events: {
-        'change': "showAlert"
-    },
-    showAlert() {
-
-        var select = $("select :selected");
-        //var select2 = $("#xxx");
-        console.log(select.text());
-        app.path = select.text();
-
-
-        app.f = new app.Collection.File();
-        app.f.url += app.path.trim();
-        app.fv = new app.Views.FileCollection({ collection: app.f });
-
-        app.ff = new app.Collection.Folder();
-        app.ff.url += app.path.trim();
-        app.ffv = new app.Views.FolderCollection({ collection: app.ff });
-
-        $("#pathInput").val(app.path);
-
-    }
+//    events: {
+//        'change': "showAlert"
+//    },
+//    showAlert() {
+//
+//        var select = $("select :selected");
+//        //var select2 = $("#xxx");
+//        console.log(select.text());
+//        app.path = select.text();
+//
+//
+//        app.f = new app.Collection.File();
+//        app.f.url += app.path.trim();
+//        app.fv = new app.Views.FileCollection({ collection: app.f });
+//
+//        app.ff = new app.Collection.Folder();
+//        app.ff.url += app.path.trim();
+//        app.ffv = new app.Views.FolderCollection({ collection: app.ff });
+//
+//        $("#pathInput").val(app.path);
+//
+//    }
 
 });
 
@@ -141,7 +141,7 @@ app.Views.Folder = Backbone.View.extend({
     tagName: "li",
     initialize: function () {
         this.model.on("destroy", function () {
-            alert("destroy folder");
+            //alert("destroy folder");
             this.$el.remove();
         }, this);
     },
@@ -196,7 +196,7 @@ app.Views.Folder = Backbone.View.extend({
             path = fragment + "/";
 
         path += folderName;
-        alert(path);
+        //alert(path);
         Backbone.history.navigate("#"+path, true);
     },
     render: function () {
@@ -259,7 +259,7 @@ app.Views.File = Backbone.View.extend({
     tagName: "li",
     initialize: function () {
         this.model.on("destroy", function () {
-            alert("destroy file");
+            //alert("destroy file");
             this.$el.remove();
         }, this);
     },
@@ -359,22 +359,22 @@ app.Views.User = Backbone.View.extend({
         //alert("Render User");
         this.model.fetch({
             success: function () {
-                alert("change auth");
+                //alert("change auth");
                 it.$el.html(it.template(it.model.toJSON()));
 
                 if (app.user.get("roles").includes("Admin")) {//TODO: bad place
-                    alert("Admin");
+                    //alert("Admin");
                     $("#manage").show();//TODO: manage show
                 }
             },
             error:function() {
-                alert("CHANGE ERROR");
+                //alert("CHANGE ERROR");
             }
         });
         return this;
     },
     renderBySync: function () {
-        alert("Render  by sync User");
+        //alert("Render  by sync User");
         this.$el.html(this.template(this.model.toJSON()));
         return this;
     }
@@ -436,7 +436,7 @@ app.Router = Backbone.Router.extend({
             }
             app.triggered = true; // mark
         } else {
-            alert("not super");
+            //alert("not super");
             $("#subView").html("");
         }
         if (app.user.get("authorized") === true)
@@ -550,7 +550,7 @@ app.Router = Backbone.Router.extend({
         this.authorizationCheck().then(function() {
             it.trigger("superView");
             if (app.user.get("roles").includes("Admin")) {
-                alert("Admin");
+                //alert("Admin");
                 $("#subView").append($("#appManageTemplate").html());
                 app.usersCollection = new app.Collections.Account();
                 app.usersView = new app.Views.AccountCollection({ collection: app.usersCollection });
