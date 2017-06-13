@@ -46,7 +46,7 @@ namespace PL.MVC.Controllers
             foreach (var applicationUser in users)
             {
                 var roles = UserManager.GetRoles(applicationUser.Id).ToList();
-                info.Add(new UserRoleModel() {Email = applicationUser.UserName, Roles = roles});
+                info.Add(new UserRoleModel() {Id = applicationUser.Id, Email = applicationUser.UserName, Roles = roles});
             }
             //var usersRoles = usersNames.Where()
                 //.Select(x => new {name = x.UserName, roles = RoleManager.Roles.Where(c=>c.Id == x.Roles.Select(z => z.RoleId))});
@@ -55,6 +55,7 @@ namespace PL.MVC.Controllers
 
         public class UserRoleModel
         {
+            public string Id { get; set; }
             public string Email { get; set; }
             public List<string> Roles { get; set; }
         }

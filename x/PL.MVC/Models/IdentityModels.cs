@@ -75,7 +75,7 @@ namespace PL.MVC.Models
             const string roleName = "Admin";
             const string name2 = "admin2@admin.com";
             const string password2 = "123654987aA!";
-            const string roleName2 = "user";
+            const string roleName2 = "User";
 
             GetValue(roleManager, roleName, userManager, name, password);
 

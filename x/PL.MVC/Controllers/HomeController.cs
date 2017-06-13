@@ -13,21 +13,17 @@ namespace PL.MVC.Controllers
         public IFileSystemFrame FileSystemFrame { get; }
 
         //TODO: ERROR DI!!!
+        public IFileSystemProvider FileSystemProvider { get; }
+        //public FileSystemProvider FileSystemProvider { get; } = new FileSystemProvider();
 
-        public FileSystemProvider FileSystemProvider { get; } = new FileSystemProvider();
-
-        public HomeController(IFileSystemFrame fileSystemFrame)
+        public HomeController(IFileSystemFrame fileSystemFrame, IFileSystemProvider fileSystemProvider)
         {
-            //var x = HostingEnvironment.MapPath("~/xxx");
             FileSystemFrame = fileSystemFrame;
-            Console.WriteLine("CTOR");
+            FileSystemProvider = fileSystemProvider;
         }
 
         public JsonResult GetDirectory(string path)
         {
-            //var z = path;
-            //var xxxx = FileSystemProvider.GetDirectories("C:/");
-
             FileSystemFrame.FillInFileSystemFrame(path);
             var temp = new {
                 Files = FileSystemFrame.Files.Select(x => x.Name),
@@ -36,13 +32,13 @@ namespace PL.MVC.Controllers
 
             return Json(temp, JsonRequestBehavior.AllowGet);
         }
-
+ 
         public JsonResult GetFiles(string path)
         {
 
             FileSystemFrame.FillInFileSystemFrame(path);
 
-            var temp = FileSystemFrame.Files.Select(x => new X() {name = x.Name});
+            var temp = FileSystemFrame.Files.Select(x => new {name = x.Name});
           
 
             return Json(temp, JsonRequestBehavior.AllowGet);
@@ -59,31 +55,47 @@ namespace PL.MVC.Controllers
             return Json(temp, JsonRequestBehavior.AllowGet);
         }
 
-        public class XXX
-        {
-            public string X {get;set;}
-        }
-
+        [HttpDelete]
         public JsonResult DeleteFile(string path)
         {
-
-            //FileSystemFrame.FillInFileSystemFrame(path);
-
             FileSystemProvider.DeleteFile(path);
-            //var temp = FileSystemFrame.Files.Select(x => new { file = x.Name });
 
             return Json( true, JsonRequestBehavior.AllowGet);
+        }
+        [HttpDelete]
+        public JsonResult DeleteFolder(string path)
+        {
+            FileSystemProvider.DeleteFolder(path);
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPut]
+        public JsonResult ChangeFolderName(string path, string oldName, string newName)
+        {
+            try
+            {
+                FileSystemProvider.UpdateFolderName(path, oldName, newName);
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPut]
         public JsonResult ChangeFileName(string path, string oldName, string newName)
         {
 
-            //FileSystemFrame.FillInFileSystemFrame(path);
-            FileSystemProvider.UpdateFileName(path,oldName,newName);
-            //var temp = FileSystemFrame.Files.Select(x => new { file = x.Name });
+            try
+            {
+                FileSystemProvider.UpdateFileName(path, oldName, newName);
 
-            return Json(true, JsonRequestBehavior.AllowGet);
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
         }
 
         public JsonResult AddFile(string path, string name)
@@ -97,14 +109,20 @@ namespace PL.MVC.Controllers
             return Json(path + name , JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult AddFolder(string path, string name)
+        {
+           FileSystemProvider.CreateFolder(path, name);
+
+            return Json(path + name, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult GetBreadCrumbs(string path)
         {
-            var pathx = Path.GetFullPath(path);
+            var pathx = Path.GetFullPath(path);//TODO: change to linq
             var pathParts = pathx.Split(new[] { Path.DirectorySeparatorChar },StringSplitOptions.RemoveEmptyEntries);
             var paths = new List<string>(12);
             for (var i = 0; i < pathParts.Length; i++)
             {
-                //if (i == 0) paths.Add(a[i] + "\\");
                 for (var j = 0; j < i + 1; j++)
                     if (j == 0) paths.Add(pathParts[j] + Path.DirectorySeparatorChar);
                     else
@@ -131,14 +149,9 @@ namespace PL.MVC.Controllers
             return Json(temp, JsonRequestBehavior.AllowGet);
         }
 
-        class X
-        {
-            public string name { get; set; }
-        }
 
         public JsonResult set(string name)
         {
-            //FileSystemProvider.UpdateFileName("C:/home",);
             return Json(name, JsonRequestBehavior.AllowGet);
         }
 

@@ -282,7 +282,7 @@ app.Views.FileCollection = Backbone.View.extend({
     },
     render: function () {
         var it = this;
-        this.$el.append('<input type="button" class="addButton" value="add" />');
+        this.$el.append('<input type="button" class="addButton" value="add" />'); //TODO: watch this ! -> Great deci
         this.collection.fetch({
             success: function () {
 //                it.collection.each(function (file) {
