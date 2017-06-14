@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bll.Interfaces
 {
@@ -19,11 +15,10 @@ namespace Bll.Interfaces
         /// </summary>
         /// <returns></returns>
         IEnumerable<DriveInfo> GetDrives();
-        IEnumerable<DirectoryInfo> GetDirectories(string path);
+        IEnumerable<DirectoryInfo> GetFolders(string path);
         IEnumerable<FileInfo> GetFiles(string path);
-        IEnumerable<FileSystemInfo> GetFileSystemInfos(string path); // TODO: think about it -> I think it is not necessary method
         /// <summary>
-        /// UPDATE //TODO: expend? + logic
+        /// UPDATE //TODO: Do I need to expand update logic?
         /// </summary>
         void UpdateFileName(string path, string oldName, string newName);
         void UpdateFolderName(string path, string oldName, string newName);
@@ -32,8 +27,6 @@ namespace Bll.Interfaces
         /// </summary>
         void DeleteFile(string path);
         void DeleteFolder(string path);
-
-
 
     }
 }

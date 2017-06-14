@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    
+    <title></title>
+    <script src="scripts/lib/jquery.js" ></script>
+    <script src="scripts/lib/underscore.js" ></script>
+    <script src="scripts/lib/backbone.js" ></script>
+<!--    <script data-main="scripts/main" src="scripts/lib/require.js"></script>-->
+
+    <script src="scripts/app/apps.js" ></script>
+
+
+
+</head>
+
+<body>
+
+<div id="forSelect">
+    
+</div>
+<div>
+    <form>
+        <input type="text" id="pathInput" value=""  />
+        <input type="submit" id="pathInputButton" value="go!" autofocus="0" />
+    </form>
+</div>
+
+    <input type="button" id="backButton" value="back" autofocus="1" hidden="true" />
+<input type="button" id="BC" value="BC" autofocus="2"  />
+    <ul id="BCUL">
+        
+    </ul>
+<hr/>
+    <h2>Files</h2>
+<div id="forFile">
+</div>
+
+    <input type="button" class="addButton" value="add" />
+    <h2>Folders</h2>
+    <div id="forFolder">
+
+    </div>
+
+    
+<div id="form">
+    <form action="/Account/Login2" class="form-horizontal" method="post" role="form">
+        <!--        <input name="__RequestVerificationToken" type="hidden" value="aVJH7FlVyUIlxVFht4d4joVSKf94lco5-W9PqwllMM8LLV1gYwAVNaI_eXQzzhZoOf_5fHuHB_0n5X-mj-bWjg_5yG9wGGv_xBnlO_ahuhU1" />                <h4>Use a local account to log in.</h4>-->
+        <hr />
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="Email">Email</label>
+            <div class="col-md-10">
+                <input class="form-control" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Email" name="Email" type="text" value="" />
+                <span class="field-validation-valid text-danger" data-valmsg-for="Email" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="Password">Password</label>
+            <div class="col-md-10">
+                <input class="form-control" data-val="true" data-val-required="The Password field is required." id="Password" name="Password" type="password" />
+                <span class="field-validation-valid text-danger" data-valmsg-for="Password" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="checkbox">
+                    <input data-val="true" data-val-required="The Remember me? field is required." id="RememberMe" name="RememberMe" type="checkbox" value="true" /><input name="RememberMe" type="hidden" value="false" />
+                    <label for="RememberMe">Remember me?</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Log in" class="btn btn-default" />
+            </div>
+        </div>
+
+    </form>
+</div>
+<input type="Button" name="name" value="AUTH_CHECKER" id="aGET"/>
+
+<!-- -->
+<!--<script id="driveTemplate" type="text/template">-->
+<!-- <option value="<%= drive %>">Drive <%= drive %></option>-->
+<!--</script>-->
+</body>
+
+</html>

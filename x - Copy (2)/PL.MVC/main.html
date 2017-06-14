@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+
+    <title></title>
+    <link href="scripts/styles/style.css" rel="stylesheet" />
+    <script src="scripts/lib/jquery.js"></script>
+    <script src="scripts/lib/underscore.js"></script>
+    <script src="scripts/lib/backbone.js"></script>
+    <!--<script data-main="scripts/main" src="scripts/lib/require.js"></script>-->
+    <script src="scripts/app/app.js" defer></script>
+
+
+</head>
+
+<body>
+
+    <a href='#' id='logout' hidden="true">Log Out</a>
+<div id="appEnterPoint">
+</div>
+
+<!-- Templates -->
+<script id="appSuperTemplate" type="text/template">
+    <header ><h2 id="super">Super<div id="account"></div></h2> <a href="#manage" id="manage" hidden >managment</a></header>
+    <div id="subView"></div>
+</script>
+<script id="appLoginTemplate" type="text/template">
+    <h2>Login</h2>
+    <form action="#main" class="form-horizontal" method="post" role="form" id="loginForm">
+        <hr />
+        <label class="col-md-2 control-label" for="Email">Email</label>
+        <div class="col-md-10">
+            <input class="form-control" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Email" name="Email" type="text" value="" />
+            <span class="field-validation-valid text-danger" data-valmsg-for="Email" data-valmsg-replace="true"></span>
+        </div>
+        <label class="col-md-2 control-label" for="Password">Password</label>
+        <div class="col-md-10">
+            <input class="form-control" data-val="true" data-val-required="The Password field is required." id="Password" name="Password" type="password" />
+            <span class="field-validation-valid text-danger" data-valmsg-for="Password" data-valmsg-replace="true"></span>
+        </div>
+        <div class="col-md-offset-2 col-md-10">
+            <div class="checkbox">
+                <input data-val="true" data-val-required="The Remember me? field is required." id="RememberMe" name="RememberMe" type="checkbox" value="true" /><input name="RememberMe" type="hidden" value="false" />
+                <label for="RememberMe">Remember me?</label>
+            </div>
+        </div>
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Log in" class="btn btn-default" id="submitButton"/>
+        </div>
+        <p>
+            <a href="#registration">Register as a new user</a>
+        </p>
+    </form>
+    </script>
+<script id="appRegistrationTemplate" type="text/template">
+    <form action="/Account/Register2" class="form-horizontal" method="post" role="form" id="registrationForm">
+        <hr />
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="Email">Email</label>
+            <div class="col-md-10">
+                <input class="form-control" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Email" name="Email" type="text" value="" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="Password">Password</label>
+            <div class="col-md-10">
+                <input class="form-control" data-val="true" data-val-length="The Password must be at least 6 characters long." data-val-length-max="100" data-val-length-min="6" data-val-required="The Password field is required." id="Password" name="Password" type="password" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="ConfirmPassword">Confirm password</label>
+            <div class="col-md-10">
+                <input class="form-control" data-val="true" data-val-equalto="The password and confirmation password do not match." data-val-equalto-other="*.Password" id="ConfirmPassword" name="ConfirmPassword" type="password" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-default" value="Register" id="submitRegistrationButton"/>
+            </div>
+        </div>
+    </form>
+
+
+    </script>
+<script id="appMainTemplate" type="text/template">
+    <h2>main</h2>
+    <input type="text" value="" id="pathInput"/> <input type="button" name="pathButton" value="ChngDirectory" id="pathInputButton"/>
+    <hr />
+
+    <div id="parentFolder"></div>
+    <div id="folders">
+    </div>
+    <div id="files"></div>
+    <hr />
+    <!--<%= drive%>-->
+    </script>
+<script id="appPreMainTemplate" type="text/template">
+        <h2>Choose Drive</h2>
+        <div id="drives"></div>
+        <!--<%= drives%>-->
+    </script>
+
+<script id="appUnauthorizedTemplate" type="text/template">
+    <a href="#login">Log In</a>
+    <a href="#registration">Registration</a>
+    </script>
+<script id="appManageTemplate" type="text/template">
+    <div id="managingTable"></div>
+    </script>
+<script id="appManageTableTemplate" type="text/template">
+    <hr />
+        Email: <%=Email%> 
+    <input type="radio" name="group1" id='<%=Id%>0' value="Admin" class="Admin"> Admin' +
+    
+    <input type="radio" name="group1" id='<%=Id%>1' value="User" class="User"> User
+    <hr />
+<!--    roles: <% for(var role in Roles) { %> <%= Roles[role] %> <% } %>-->
+ 
+    
+</script>
+<script id="fileTemplate" type="text/template">
+        File <%= file %> <input type="button" class="deleteButton" value="delete" /> <input type="button" class="changeButton" value="change" />
+    </script>
+<script id="folderTemplate" type="text/template">
+    <a href='#<%= app.path + folder %>' class='path'>Folder <%= folder %></a>
+        <input type="button" class="deleteButton" value="delete" />
+        <input type="button" class="changeButton" value="change" />
+    
+</script>
+</body>
+
+</html>

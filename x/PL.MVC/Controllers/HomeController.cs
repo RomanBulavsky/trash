@@ -11,10 +11,8 @@ namespace PL.MVC.Controllers
     public class HomeController : Controller
     {
         public IFileSystemFrame FileSystemFrame { get; }
-
-        //TODO: ERROR DI!!!
+        
         public IFileSystemProvider FileSystemProvider { get; }
-        //public FileSystemProvider FileSystemProvider { get; } = new FileSystemProvider();
 
         public HomeController(IFileSystemFrame fileSystemFrame, IFileSystemProvider fileSystemProvider)
         {
@@ -27,7 +25,7 @@ namespace PL.MVC.Controllers
             FileSystemFrame.FillInFileSystemFrame(path);
             var temp = new {
                 Files = FileSystemFrame.Files.Select(x => x.Name),
-                Folders = FileSystemFrame.Directories.Select(x => x.Name)
+                Folders = FileSystemFrame.Folders.Select(x => x.Name)
             };
 
             return Json(temp, JsonRequestBehavior.AllowGet);
@@ -55,6 +53,7 @@ namespace PL.MVC.Controllers
             return Json(temp, JsonRequestBehavior.AllowGet);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         public JsonResult DeleteFile(string path)
         {
@@ -62,12 +61,14 @@ namespace PL.MVC.Controllers
 
             return Json( true, JsonRequestBehavior.AllowGet);
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         public JsonResult DeleteFolder(string path)
         {
             FileSystemProvider.DeleteFolder(path);
             return Json(true, JsonRequestBehavior.AllowGet);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         public JsonResult ChangeFolderName(string path, string oldName, string newName)
         {
@@ -81,7 +82,7 @@ namespace PL.MVC.Controllers
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         public JsonResult ChangeFileName(string path, string oldName, string newName)
         {
@@ -97,25 +98,24 @@ namespace PL.MVC.Controllers
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
         }
-
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
         public JsonResult AddFile(string path, string name)
         {
-
-            //FileSystemFrame.FillInFileSystemFrame(path);
             FileSystemProvider.CreateFile(path, name);
-            //var temp = FileSystemFrame.Files.Select(x => new { file = x.Name });
-
 
             return Json(path + name , JsonRequestBehavior.AllowGet);
         }
-
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
         public JsonResult AddFolder(string path, string name)
         {
-           FileSystemProvider.CreateFolder(path, name);
+            FileSystemProvider.CreateFolder(path, name);
 
             return Json(path + name, JsonRequestBehavior.AllowGet);
         }
-
+        [Authorize]
+        [HttpGet]
         public JsonResult GetBreadCrumbs(string path)
         {
             var pathx = Path.GetFullPath(path);//TODO: change to linq
@@ -130,87 +130,36 @@ namespace PL.MVC.Controllers
             }
             return Json(paths, JsonRequestBehavior.AllowGet);
         }
-
+        [Authorize]
+        [HttpGet]
         public JsonResult GetParrent(string path)
         {
             var x = Directory.GetParent(Path.GetFullPath(path));
            
             return Json(x.FullName, JsonRequestBehavior.AllowGet);
         }
-
+        [Authorize]
+        [HttpGet]
         public JsonResult GetFolder(string path)
         {
 
             FileSystemFrame.FillInFileSystemFrame(path);
 
-            var temp = FileSystemFrame.Directories.Select(x => new { folder = x.Name, path = x.FullName });
+            var temp = FileSystemFrame.Folders.Select(x => new { folder = x.Name, path = x.FullName });
 
 
             return Json(temp, JsonRequestBehavior.AllowGet);
         }
-
-
-        public JsonResult set(string name)
-        {
-            return Json(name, JsonRequestBehavior.AllowGet);
-        }
-
-        public JsonResult Disk()
-        {
-            string[] smass = new[] {"C:/", "D:/"};
-           //return Json(new {Drive = FileSystemProvider.GetDrives().Select(x => x.Name) }, JsonRequestBehavior.AllowGet);
-            return Json(new {Drives = smass}, JsonRequestBehavior.AllowGet);
-        }
-
-        public JsonResult GetDrives()
-        {
-
-            var temp = FileSystemFrame.Drives.Select(x => new { drive = x.Name });
-
-            DriveViewModel[] smass = { new DriveViewModel { drive = "C:/"}, new DriveViewModel { drive = "D:/" } };
-            //return Json(new {Drive = FileSystemProvider.GetDrives().Select(x => x.Name) }, JsonRequestBehavior.AllowGet);
-            return Json(smass, JsonRequestBehavior.AllowGet);
-        }
-
-        class DriveViewModel
-        {
-            public string drive { get; set; }
-        }
-
-        public JsonResult Index2()
-        {
-            ViewBag.Drives = FileSystemFrame.Drives.Select(x=>x.Name).ToList();
-            FileSystemFrame.FillInFileSystemFrame("c:/Home");
-            RepresentingClass r = new RepresentingClass()
-            {
-                Drives = FileSystemFrame.Drives.Select(x=>x.Name),
-                Files = FileSystemFrame.Files.Select(x => x.Name),
-                Folders = FileSystemFrame.Directories.Select(x => x.Name)
-            };
-
-            return Json(r, JsonRequestBehavior.AllowGet);
-            //return View();
-        }
-
-        public ViewResult Index()
-        {
-            return View();
-        }
-
         [Authorize]
-        public JsonResult AuthTest()
+        [HttpGet]
+        public JsonResult GetDrives()=>
+            Json(FileSystemProvider.GetDrives().Select(x => new {drive= x.Name } ), JsonRequestBehavior.AllowGet);
+
+        public ActionResult Index()
         {
-            string s = "Authorized!";
-            return Json(s,JsonRequestBehavior.AllowGet);
-          
+            return File("main.html","text/html");
         }
 
-        class RepresentingClass
-        {
-            public IEnumerable<string> Drives { get; set; }
-            public IEnumerable<string> Files { get; set; }
-            public IEnumerable<string> Folders { get; set; }
-        }
 
         public ActionResult About()
         {

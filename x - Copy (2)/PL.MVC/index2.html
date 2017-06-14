@@ -1,0 +1,320 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title></title>
+    <!--<script data-main="scripts/main" src="scripts/lib/require.js"></script>-->
+<!---->
+<!--    <script type="text/template" id="template">-->
+<!--    <%= drive %> | <%= path %> | <%= folders %> | <%= files %> -->
+<!--       </script>-->
+
+    <script src="scripts/lib/jquery.js" ></script>
+    <script src="scripts/lib/underscore.js" ></script>
+    <script src="scripts/lib/backbone.js" ></script>
+    <script src="scripts/app/bb.js" ></script>
+
+
+</head>
+
+<body>
+<h1>Hello</h1>
+    <hr/>
+    <dir id="dir"></dir>
+<hr />
+    
+    <div id="yyy"></div>
+<dir id="file"></dir>
+    
+
+    <input type="text"  id="input1" value="text" />
+<input type="button" name="name" id="button1" value="Refresh" />
+    
+    <div id="zzz"></div>
+
+<!--<script>
+
+    var app = app || {};
+
+//    $.post()
+//    {
+//        
+//    }
+//    $("#bb")
+    app.path = "";
+    app.DriveModel = Backbone.Model.extend({
+        defaults: {
+            Drives: ['default']
+        },
+        urlRoot: 'home/disk'
+    });
+
+    var drive = new app.DriveModel();
+    //drive.fetch();
+    console.log("Fetching");
+
+    app.DriveView = Backbone.View.extend({
+        tagName: 'select',
+        id: 'xxx',
+        
+        template: _.template(" <option disabled selected value>Drive</option> </option> <% for(var drive in Drives) { %><option> <%= Drives[drive] %> </option><% } %>"),
+        initialize: function () {
+            var it = this;
+            this.model.fetch({
+                success: function () {
+                    alert("success" + it.model);
+                    it.render();
+//                    $("#xxx").change(function () {
+//                        alert(this.value);
+//                    });
+                }
+            });
+            //this.render();
+            //this.model.fetch();
+        },
+        events: {
+            'change': 'showAlert'
+
+        },
+        showAlert() {
+
+            if (app.path.length < 3) {
+            
+            var select = $("#xxx :selected");
+            //var select2 = $("#xxx");
+            console.log(select.text());
+            app.path = select.text();
+               }
+
+            var dir = new app.DirectoryModel();
+            dir.urlRoot += app.path.trim();
+            app.dirview = new app.DirectoryViewModel({ model: dir });
+
+
+            var file = new app.FileModel();
+            file.urlRoot += app.path.trim();
+            app.fileview = new app.FileViewModel({ model: file });
+
+            $("#input1").val(app.path.trim());
+            //console.log();
+            //$("#dir").append(app.dirview.el);
+            //console.log(select);
+            //console.log(select2[0].value);
+        },
+
+
+        render: function () {
+            alert("render");
+            this.$el.html(this.template(this.model.toJSON()));
+            return this; // enable chained calls
+        }
+    });
+    
+
+    app.view = new app.DriveView({ model: drive });
+    
+    $(document.body).append(app.view.el);
+
+
+    
+    $("#button1").click(function () {
+     
+        app.path = $("#input1").val();
+        alert(app.path);
+        app.view.showAlert();
+        app.view.render();
+    });
+
+
+
+
+
+
+    app.DirectoryModel = Backbone.Model.extend({
+        defaults: {
+            Folders: ['default']
+        },
+        urlRoot: 'home/GetDirectory?path='
+    });
+    app.DirectoryViewModel = Backbone.View.extend({
+        tagName: 'ul',
+        model:app.DirectoryModel,
+        template: _.template("  <% for(var drive in Folders) { %><li> <%= Folders[drive] %> </li><% } %>"),
+        initialize: function () {
+            var it = this;
+            this.model.fetch({
+                success: function () {
+                    alert("VIEW RENDER when path is"+ app.path + "and " + it.model);
+                    
+                    
+                    //                    $("#xxx").change(function () {
+                    //                        alert(this.value);
+                    //                    });
+                }
+            }).then(function () {
+                it.render();
+                $("#file").html(it.el);
+            });
+            //this.render();
+            //this.model.fetch();
+        },
+        events: {
+            //'change': 'showAlert'
+
+        },
+      
+
+
+        render: function () {
+            alert("render");
+            this.$el.html(this.template(this.model.toJSON()));
+            return this; // enable chained calls
+        }
+    });
+
+
+    app.FileModel = Backbone.Model.extend({
+        defaults: {
+            Files: ['default']
+        },
+        urlRoot: 'home/GetDirectory?path='
+    });
+    app.FileViewModel = Backbone.View.extend({
+        tagName: 'ul',
+        model: app.DirectoryModel,
+        template: _.template("  <% for(var drive in Files) { %><li> <%= Files[drive] %> </li><% } %>"),
+        initialize: function () {
+            var it = this;
+            this.model.fetch({
+                success: function () {
+                    alert("VIEW RENDER when path is" + app.path + "and " + it.model);
+
+
+                    //                    $("#xxx").change(function () {
+                    //                        alert(this.value);
+                    //                    });
+                }
+            }).then(function () {
+                it.render();
+                $("#dir").html(it.el);
+            });
+            //this.render();
+            //this.model.fetch();
+        },
+        events: {
+            //'change': 'showAlert'
+
+        },
+
+
+
+        render: function () {
+            alert("render");
+            this.$el.html(this.template(this.model.toJSON()));
+            return this; // enable chained calls
+        }
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+//    app.driveModel = Backbone.Model.extend({
+//        defaults: {
+//            name: "C",
+//            path: "current"
+//        },
+//        urlRoot: 'home/index'
+//    });
+//
+//    app.driveCollection = Backbone.Collection.extend({
+//        model: app.driveModel,
+//        urlRoot: 'home/index',
+//        url: 'home/index'
+//        //localStorage: new Store("backbone-todo")
+//    });
+//    app.driveView = Backbone.View.extend({
+//        tagName: 'option',
+//        template: _.template("Disk: <b><%- name %></b> Path: <%= path%>"),
+//        initialize: function() {
+//            this.render();
+//            //this.model.fetch();
+//        },
+//
+//
+//        render: function() {
+//            this.$el.html(this.template(this.model.toJSON()));
+//            return this; // enable chained calls
+//        }
+//
+//    });
+//    app.driveCollectionView = Backbone.View.extend({
+//        tagName: 'select',
+//        template: _.template("Disk: <b><%- name %></b> Path: <%= path%>"),
+//        initialize: function() {
+//            this.collection.fetch();
+//            this.render();
+//        },
+//        render: function() {
+//            this.collection.each(function(drive) {
+//                    var driveV = new app.driveView({ model: drive });
+//                    this.$el.append(driveV.el);
+//                },
+//                this);
+//        }
+//        // render: function () {
+//        //     this.ech
+//        //     this.$el.html(this.template(this.model.toJSON()));
+//        //     return this; // enable chained calls
+//        // }
+//
+//    });
+//
+//    app.BigModel = Backbone.Model.extend({
+//        defaults: {
+//            Drives: [],
+//            Files: [],
+//            Folders: []
+//        },
+//        urlRoot: 'home/index'
+//    });
+//    app.BigModelView = Backbone.View.extend({
+//        tagName: 'div',
+//        template: _.template("Disk: <b><%- name %></b> Path: <%= path%>"),
+//        initialize: function() {
+//            this.render();
+//            //this.model.fetch();
+//        },
+//
+//
+//        render: function() {
+//            this.$el.html(this.template(this.model.toJSON()));
+//            return this; // enable chained calls
+//        }
+//
+//    });
+//
+//    var bm = new app.BigModel();
+//
+//    var model = new app.driveModel({
+//        name: "C",
+//        path: "C/:->"
+//    });
+//    var model2 = new app.driveModel({
+//        name: "D",
+//        path: "D/:->"
+//    });
+//    var col = new app.driveCollection();
+
+</script>-->
+</body>
+
+</html>

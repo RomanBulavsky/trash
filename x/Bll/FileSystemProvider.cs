@@ -40,7 +40,7 @@ namespace Bll
             return DriveInfo.GetDrives();
         }
 
-        public IEnumerable<DirectoryInfo> GetDirectories(string path)
+        public IEnumerable<DirectoryInfo> GetFolders(string path)
         {
             CheckUpStrings(path);
             IsFolderExist(path);

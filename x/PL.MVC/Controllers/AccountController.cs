@@ -23,160 +23,15 @@ namespace PL.MVC.Controllers
         private ApplicationUserManager _userManager;
         private ApplicationRoleManager _roleManager;
 
-        public AccountController()
-        {
-        }
-
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, ApplicationRoleManager roleManager)
-        {
-            UserManager = userManager;
-            SignInManager = signInManager;
-            RoleManager = roleManager;
-        }
-
-        #region MyRegion
-        [Authorize(Roles = "Admin")]
-        public JsonResult GetRoles() => Json(Roles.GetAllRoles(), JsonRequestBehavior.AllowGet);
-
-        [Authorize(Roles = "Admin")]
-        public JsonResult GetUsers()
-        {
-            var users = UserManager.Users.Where(x => x.UserName != User.Identity.Name).ToList();
-            var info = new List<UserRoleModel>();
-            foreach (var applicationUser in users)
-            {
-                var roles = UserManager.GetRoles(applicationUser.Id).ToList();
-                info.Add(new UserRoleModel() {Id = applicationUser.Id, Email = applicationUser.UserName, Roles = roles});
-            }
-            //var usersRoles = usersNames.Where()
-                //.Select(x => new {name = x.UserName, roles = RoleManager.Roles.Where(c=>c.Id == x.Roles.Select(z => z.RoleId))});
-            return Json(info, JsonRequestBehavior.AllowGet);
-        }
-
-        public class UserRoleModel
-        {
-            public string Id { get; set; }
-            public string Email { get; set; }
-            public List<string> Roles { get; set; }
-        }
-
-        [Authorize(Roles = "Admin")]//TODO: post
-        public JsonResult AddUserToRole(string userName, string roleName)
-        {
-            try
-            {
-                Roles.AddUserToRole(User.Identity.Name, roleName);
-                return Json(User.IsInRole(roleName),JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                throw new Exception("AddUserToRole", e);
-            }
-        }
-
-        [Authorize(Roles = "Admin")]//TODO: post
-        public JsonResult UpdateUserRoles(string userName, string newRoleName, string oldRoleName)
-        {
-            try
-            {
-                var user = UserManager.Users.First(x => x.UserName == userName);
-                UserManager.RemoveFromRole(user.Id,oldRoleName);
-                UserManager.AddToRole(user.Id, newRoleName);
-                var rolea = UserManager.IsInRole(user.Id, "Admin");
-                var roleu = UserManager.IsInRole(user.Id, "User");
-                return Json(User.IsInRole(newRoleName), JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                throw new Exception("UpdateUserRoles", e);
-            }
-        }
-
-        [AllowAnonymous]
-        public JsonResult GetRole() => Json(Roles.GetRolesForUser(User.Identity.Name), JsonRequestBehavior.AllowGet);
-
-        [Authorize]
-        public JsonResult GetUserRoles()
-        {
-            var roles = new List<string>();
-            var userRoleIds = UserManager.Users.First(x => x.UserName == User.Identity.Name).Roles.Select(x => x.RoleId);
-            foreach (var id in userRoleIds)
-            {
-                var role = RoleManager.Roles.FirstOrDefault(x => x.Id == id)?.Name;
-                if(role != null)
-                    roles.Add(role);
-            }
-            return Json(roles, JsonRequestBehavior.AllowGet);
-        } 
-
-        [AllowAnonymous]
-        public JsonResult IsAuthorized()
-        {
-            var userName = !User.Identity.GetUserName().IsEmpty();
-           
-            return Json(userName, JsonRequestBehavior.AllowGet);
-        }
-
-        [AllowAnonymous]
-        public JsonResult UserInformation()
-        {
-            try
-            {
-                var user = UserManager?.Users?.FirstOrDefault(x => x.UserName == User.Identity.Name);
-                if(user == null)
-                    return Json(new { email = "Unauth", roles = "Guest" }, JsonRequestBehavior.AllowGet);
-
-                var userRoles = UserManager.GetRoles(user.Id).ToList();
-
-                return Json(new { email = User.Identity.Name, roles = userRoles }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-            
-        }
-
-        [AllowAnonymous]
-        public JsonResult LogOut()
-        {
-            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return Json("true",JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<JsonResult> Register2(RegisterViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                    await UserManager.AddToRoleAsync(user.Id, "User");
-
-                    return Json("Success " + user.UserName);
-                }
-                AddErrors(result);
-            }
-
-            return Json("Failed");
-        }
-        #endregion
-
         public ApplicationSignInManager SignInManager
         {
             get
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -204,83 +59,22 @@ namespace PL.MVC.Controllers
             }
         }
 
-        //
-        // GET: /Account/Login
-        [AllowAnonymous]
-        public ActionResult Login(string returnUrl)
+        public AccountController()
         {
-            ViewBag.ReturnUrl = returnUrl;
-            return View();
         }
 
-        //
-        // POST: /Account/Login
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, ApplicationRoleManager roleManager)
+        {
+            UserManager = userManager;
+            SignInManager = signInManager;
+            RoleManager = roleManager;
+        }
+
+        #region LogIn_LogOff_Register
+
         [HttpPost]
         [AllowAnonymous]
-        //[ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
-            switch (result)
-            {
-                case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
-                    return View(model);
-            }
-        }
-        [AllowAnonymous]
-        public ActionResult Login2(string returnUrl)
-        {
-            ViewBag.ReturnUrl = returnUrl;
-            return View();
-        }
-
-        //
-        // POST: /Account/Login
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<ActionResult> Login2(LoginViewModel model, string returnUrl)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
-            switch (result)
-            {
-                case SignInStatus.Success:
-                    return null;//RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = "lol", RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
-                    return View(model);
-            }
-        }
-        
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<JsonResult> Login3(LoginViewModel model)
+        public async Task<JsonResult> LoginBackbone(LoginViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -294,19 +88,141 @@ namespace PL.MVC.Controllers
             {
                 case SignInStatus.Success:
                     return Json("Success");
-                //return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return Json("LockOut");
                 //return View("Lockout");
                 case SignInStatus.RequiresVerification:
                     return Json("reqVer");
-                //return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "Invalid login attempt.");
                     return Json("def");
-                    //return View(model);
             }
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public JsonResult LogOffBackbone()
+        {
+            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            return Json("true",JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<JsonResult> RegisterBackbone(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    await UserManager.AddToRoleAsync(user.Id, "User");
+
+                    return Json("Success " + user.UserName);
+                }
+                AddErrors(result);
+            }
+
+            return Json("Failed");
+        }
+        #endregion
+
+        #region InformationAboutUser/s
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public JsonResult Roles() => Json(System.Web.Security.Roles.GetAllRoles(), JsonRequestBehavior.AllowGet);
+
+        [HttpGet]
+        [AllowAnonymous]
+        public JsonResult IsAuthorized()
+        {
+            var isAuthorized = !User.Identity.GetUserName().IsEmpty();
+
+            return Json(isAuthorized, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public JsonResult UserInformation()
+        {
+            try
+            {
+                var user = UserManager?.Users?.FirstOrDefault(x => x.UserName == User.Identity.Name);
+                if (user == null)
+                    return Json(new { email = "Unauth", roles = "Guest" }, JsonRequestBehavior.AllowGet);
+
+                var userRoles = UserManager.GetRoles(user.Id).ToList();
+
+                return Json(new { email = User.Identity.Name, roles = userRoles }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public JsonResult InformationAboutUsers()
+        {
+            var users = UserManager.Users.Where(x => x.UserName != User.Identity.Name).ToList();
+            var informationAboutUsers = new List<UserRoleViewModel>();
+            foreach (var applicationUser in users)
+            {
+                var roles = UserManager.GetRoles(applicationUser.Id).ToList();
+                informationAboutUsers.Add(new UserRoleViewModel() { Id = applicationUser.Id, Email = applicationUser.UserName, Roles = roles });
+            }
+
+            return Json(informationAboutUsers, JsonRequestBehavior.AllowGet);
+        }
+
+        //[HttpPost]
+        [Authorize(Roles = "Admin")]//TODO: post -> GET for tests
+        public JsonResult AddUserToRole(string userName, string roleName)
+        {
+            try
+            {
+                System.Web.Security.Roles.AddUserToRole(User.Identity.Name, roleName);
+                return Json(User.IsInRole(roleName), JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("AddUserToRole", e);
+            }
+        }
+
+        //[HttpPost]
+        [Authorize(Roles = "Admin")]//TODO: it works but it is not implemented yet
+        public JsonResult UpdateUserRoles(string userName, string newRoleName, string oldRoleName)
+        {
+            try
+            {
+                var user = UserManager.Users.First(x => x.UserName == userName);
+                UserManager.RemoveFromRole(user.Id, oldRoleName);
+                UserManager.AddToRole(user.Id, newRoleName);
+                return Json(UserManager.GetRoles(user.Id).Where(x=>x.Contains(newRoleName)).Select(x=>x), JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("UpdateUserRoles", e);
+            }
+        }
+        #endregion
+
+        //
+        // GET: /Account/Login
+        [AllowAnonymous]
+        public ActionResult Login(string returnUrl)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
         }
 
         //

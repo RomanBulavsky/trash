@@ -1,0 +1,10 @@
+{
+    "typeAcquisition": {
+        "include": [
+            "underscore",
+            "jquery",
+            "backbone",
+            "require"
+        ]
+    }
+}
