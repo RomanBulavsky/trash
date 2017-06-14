@@ -33,7 +33,7 @@ app.Views.Account = Backbone.View.extend({
     changeAccountRole: function () {
         var roleNameNew = $("input[name=" + this.model.get("Id") + "]:checked").val();
         var roleNameOld = $("input[name=" + this.model.get("Id") + "]:not(:checked)").val();
-        alert(roleNameOld);
+        //alert(roleNameOld);
         var data = { userName: this.model.get("Email"), newRoleName: roleNameNew, oldRoleName: roleNameOld };
         var it = this;
         this.model.save(data).then(function (e) {
@@ -41,7 +41,8 @@ app.Views.Account = Backbone.View.extend({
                 alert("TRUE");
             } else {
                 it.model.set('Roles', it.model._previousAttributes.Roles);
-                //it.el = it.render().el;// change to old
+                $("input[name=" + it.model.get("Id") + "]:not(:checked)").prop("chacked",true);
+                //it.el = it.render().el;// TODO: change to old
                 console.log("Folder Name Error");
             }
         });
@@ -354,7 +355,7 @@ app.Views.User = Backbone.View.extend({
     template: _.template("Email: <%=email%> <br> Role: <% for(var role in roles) { %> <%= roles[role] %> <% } %>"),
     initialize: function () {
         //var it = this;
-        this.model.fetch({ success: function () {/*it.render();*/ }, error: function () { console.log("Unauthorized"); } });
+        this.model.fetch({ success: function () {/*alert("User fetch complete")*/ }, error: function () { console.log("Unauthorized"); } });
         //this.model.on('change', this.render, this);// TODO: -> |
         //this.model.on('sync', this.renderBySync, this);
         this.model.on('change:authorized', this.render, this);
@@ -396,14 +397,15 @@ app.Router = Backbone.Router.extend({
         '*someRef': 'login'
     },
     initialize: function () {
-        //this.authorizationCheck();
+        this.authorizationCheck();
         this.on('superView', this.superView, this); // SuperView rendering EVENT
     },
     authorizationCheck: function () {
         return $.get({
             url: "/account/IsAuthorized",
-            it: this,
+            //async: false,
             success: function (isAuthorized) {
+                //alert("success + is a " + isAuthorized);
                 if (isAuthorized === true) {
                     app.user.set("authorized", true);
                     app.triggered = false; // we can create full super view
@@ -464,6 +466,7 @@ app.Router = Backbone.Router.extend({
         var it = this;
         it.path = path;
         this.authorizationCheck().then(function () {
+
             if (app.user.get("authorized") === false) {
                 Backbone.history.navigate("#login", true);
             }
@@ -553,12 +556,10 @@ app.Router = Backbone.Router.extend({
         }
     },
     manage: function () {
-        var it = this;
-        this.authorizationCheck().then(function(e) {
-            var self = it;
-            it.authorizationCheck().then(function(e) {//TODO: think about it
-                alert(e + "roles" + app.user.get("roles"));
-
+        var self = this;
+//        this.authorizationCheck().then(function(e) {
+//            var self = it;
+        this.authorizationCheck().done(function (e) {//TODO: think about it
                 //if(!app.user.get("roles").includes("Admin"))
                 self.trigger("superView");
                 if (app.user.get("roles").includes("Admin") && e) {
@@ -571,15 +572,16 @@ app.Router = Backbone.Router.extend({
                     Backbone.history.navigate("#preMain", true);
                 }
             });
-        });
+        //});
     }
 });
 
 Backbone.emulateHTTP = true;
 app.user = new app.Models.User();
-app.userView = new app.Views.User({ model: app.user });
-new app.Router();
-Backbone.history.start();
+app.userView = new app.Views.User({ model: app.user }).model.fetch().then(function() {
+    new app.Router();
+    Backbone.history.start();
+});
 
 //collection.fetch
 //            { //ye we can but events are better) add event 
