@@ -405,13 +405,16 @@ app.Router = Backbone.Router.extend({
             url: "/account/IsAuthorized",
             //async: false,
             success: function (isAuthorized) {
-                //alert("success + is a " + isAuthorized);
+                alert("success + is a " + isAuthorized);
                 if (isAuthorized === true) {
                     app.user.set("authorized", true);
                     app.triggered = false; // we can create full super view
 
                     if (Backbone.history.fragment === "login") // TODO: ridirect crutch
                         Backbone.history.navigate("#preMain", true);
+                } else {
+                    app.user.set("authorized", false);
+                    Backbone.history.navigate("#login", true);
                 }
             }
         });
@@ -465,7 +468,7 @@ app.Router = Backbone.Router.extend({
     main: function (drive, path) {
         var it = this;
         it.path = path;
-        this.authorizationCheck().then(function () {
+        this.authorizationCheck().done(function () {
 
             if (app.user.get("authorized") === false) {
                 Backbone.history.navigate("#login", true);
@@ -578,9 +581,11 @@ app.Router = Backbone.Router.extend({
 
 Backbone.emulateHTTP = true;
 app.user = new app.Models.User();
-app.userView = new app.Views.User({ model: app.user }).model.fetch().then(function() {
-    new app.Router();
-    Backbone.history.start();
+app.userView = new app.Views.User({ model: app.user }).model.fetch({
+    complete:function () {      
+        new app.Router();
+        Backbone.history.start();
+    }
 });
 
 //collection.fetch
